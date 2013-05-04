@@ -1,4 +1,4 @@
-package TTP;
+package ttpservice;
 
 public class Timer extends Thread implements Runnable{
 	

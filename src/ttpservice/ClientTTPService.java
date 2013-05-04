@@ -1,4 +1,4 @@
-package TTP;
+package ttpservice;
 
 import datatypes.Datagram;
 

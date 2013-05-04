@@ -5,8 +5,7 @@
 package TTPApplication;
 
 import java.io.IOException;
-import TTP.ClientTTPService;
-import TTP.TTP;
+import ttpservice.*;
 import datatypes.Datagram;
 
 public class TTPclient {

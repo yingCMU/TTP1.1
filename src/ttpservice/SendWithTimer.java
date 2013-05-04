@@ -1,4 +1,4 @@
-package TTP;
+package ttpservice;
 
 import java.io.IOException;
 import services.DatagramService;

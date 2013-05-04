@@ -1,4 +1,4 @@
-package TTP;
+package ttpservice;
 
 import java.util.Hashtable;
 import datatypes.Datagram;

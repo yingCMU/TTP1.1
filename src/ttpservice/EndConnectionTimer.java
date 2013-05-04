@@ -1,4 +1,4 @@
-package TTP;
+package ttpservice;
 import java.util.Hashtable;
 
 public class EndConnectionTimer extends Thread implements Runnable{

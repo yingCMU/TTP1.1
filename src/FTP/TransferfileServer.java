@@ -12,8 +12,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.security.MessageDigest;
 
-import TTP.ConDescriptor;
-import TTP.ServerTTPService;
+import ttpservice.ConDescriptor;
 
 
 class TransferfileServer extends Thread

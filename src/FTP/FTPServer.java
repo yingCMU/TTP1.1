@@ -4,8 +4,8 @@ package FTP;
 
 import java.net.*;
 
-import TTP.ConDescriptor;
-import TTP.ServerTTPService;
+import ttpservice.*;
+
 
 
 public class FTPServer

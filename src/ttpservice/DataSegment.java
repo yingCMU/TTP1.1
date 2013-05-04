@@ -1,4 +1,4 @@
-package TTP;
+package ttpservice;
 
 public class DataSegment {
 	public Object data;

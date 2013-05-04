@@ -3,7 +3,7 @@
  */
 package TTPApplication;
 
-import TTP.ServerTTPService;
+import ttpservice.*;
 
 
 public class TTPserver {
