@@ -87,16 +87,14 @@ public class ServerTTPService extends TTPservice{
 					int ack = ttp.getACK();
 					client.setTempACK(ack);
 					client.receiveFlag = true;
-					if (ack == client.getExpectSYN()) { //right
-						client.setServerSYN(ack);
-						client.setACK(ttp.getSYN()+ttp.getLength()) ;
-						
-						if (ttp.getData() != null) {
-							client.setData(ttp.getData());
-							return client;
-						}
-						
-					} 
+
+					client.setACK(ttp.getSYN()+ttp.getLength()) ;
+												
+					if (ttp.getData() != null) {
+						client.setData(ttp.getData());
+						return client;
+					}
+						 
 				} else {
 					serverSendData(client, null, (short)0, (char)1);
 				}
@@ -110,7 +108,6 @@ public class ServerTTPService extends TTPservice{
 		SendWithTimer timer = super.sendData(client.getACK(), client.getServerSYN(), client.getClientAddr(), 
 					   client.getClientPort(), data, dataLength, category, 5);
 		client.setTimer(timer);
-		client.setExpectSYN(client.getServerSYN() + dataLength);
 		
 		return 0;
 	}
@@ -119,7 +116,6 @@ public class ServerTTPService extends TTPservice{
 		SendWithTimer timer = super.sendData(client.getACK(), client.getServerSYN(), client.getClientAddr(), 
 					   client.getClientPort(), data, dataLength, category, count);
 		client.setTimer(timer);
-		client.setExpectSYN(client.getServerSYN() + dataLength);
 		
 		return 0;
 	}

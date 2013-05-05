@@ -61,18 +61,27 @@ class TransferfileServer extends Thread
 
          MessageDigest md = MessageDigest.getInstance("MD5");
          
-         byte[] dataBytes = new byte[1];
+         byte[] dataBytes = new byte[100];
+         int index = 0;
          
          int ch = 0; 
          do{
         	 ch = fin.read();
+        	 dataBytes[index++] = (byte) ch;
         	 System.out.println("ch>>"+ch +"  ; sstream >"+new String(dataBytes));
         	 if(ch != -1)
            
         	 md.update((byte) ch);
-           clientCon.send((byte)ch);
-          
+             
+        	 
          } while(ch != -1) ;
+         
+         Object[] obj = new Object[1];
+    	 obj[0] = dataBytes;
+    	 short[] len = new short[1];
+    	 len[0] = (short)(index -1);
+    	 
+         clientCon.send(obj, len);
          byte[] mdbytes = md.digest();
   
          //convert the byte to hex format method 1
@@ -85,7 +94,8 @@ class TransferfileServer extends Thread
          
          
          fin.close();    
-        clientCon.send("File Receive Successfully");   
+         clientCon.send("File Receive Successfully"); 
+         System.out.println("file send successfully");
          return;
      }
  }

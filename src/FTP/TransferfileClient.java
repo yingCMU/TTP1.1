@@ -49,35 +49,22 @@ class TransferfileClient
      {
          System.out.println("Receiving File ...");
          
-         File f=new File(fileName);
+         File f=new File(fileName + 1);
          FileOutputStream fout=new FileOutputStream(f);
-         int ch;
-         String temp;/*
-         do
-         {
-             temp=din.read();
-             ch=Integer.parseInt(temp);
-             if(ch!=-1)
-             {
-                 fout.write(ch);                    
-             }
-         }while(ch!=-1);
-         */
          
-        
-         do
-         {	 System.out.println("before rec ");
-             temp=(String) ttps.receive();
-             System.out.println("after rec ");
-             ch=Integer.parseInt(temp);
-             System.out.println("ch>> "+ch);
-             if(ch!=-1)
-             {
-                 fout.write(ch);                    
-             }
-         }while(ch!=-1);
+         byte[] temp = new byte[1];
+         temp = (byte[])(ttps.receive());
+         System.out.println("TEMP: " + temp[0]);
+         System.out.println("before rec ");
+         if (fout == null) {
+        	 System.out.println("fout null");
+         }
+         
+         if (temp == null) {
+        	 System.out.println("receive null");
+         }
+         fout.write(temp);     
          fout.close();
-         System.out.println(ttps.receive());
              
      }
      

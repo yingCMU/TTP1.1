@@ -9,7 +9,7 @@ public class ConDescriptor{
 	private short serverport;
 	private short clientport;
 	private int serverSYN;
-	private int expectSYN;
+	//private int expectSYN;
 	private int ACK;
 	private EndConnectionTimer closeTimer;
 	private boolean connected;
@@ -69,10 +69,16 @@ public class ConDescriptor{
 	}
 	
 	public void send(Object[] d, short[] dLength) {
+		for (int i  = 0; i < d.length; i++) {
+			System.out.println("Data to be sent: " + d[i]);
+		}
 		constructDataSegment(d, dLength);
+		
+		System.out.println("windowBegin: " + windowBegin + " windowEnd: " + windowEnd);
 		while (windowBegin < windowEnd) {
 			
 			for (int i = windowSend; i < windowEnd; i++) {
+				System.out.println("here2");
 				System.out.println("BEGIN: " + windowBegin + " END: " + windowEnd + " SEND: " + windowSend);
 				sendData[i].timer = sendData(ACK, sendData[i].SYN, 
 						clientaddr, clientport, sendData[i].data, 
@@ -90,6 +96,8 @@ public class ConDescriptor{
 				receiveFlag = false;
 			}
 		}
+		windowBegin = 0;
+		windowSend = 0;
 	}
 	
 	public void moveWindow() {
@@ -102,8 +110,12 @@ public class ConDescriptor{
 						sendData[j].timer.interrupt();
 					}
 				}
+				
 				windowBegin = i + 1;
 				windowEnd = min(windowBegin + WINDOWSIZE, dataLength) - 1;
+				
+				serverSYN = sendData[i].expectedSYN;
+				
 				moveFlag = true;
 			}
 		}
@@ -115,6 +127,7 @@ public class ConDescriptor{
 	
 	public SendWithTimer sendData (int ACK, int SYN, String dstaddr, short dstPort, 
 			  Object data, short dataLength, char category, int count) {
+		
 		TTP ttp = new TTP(ACK, SYN, data, dataLength, category);
 		Datagram datagram = new Datagram(serveraddr, clientaddr, serverport, clientport, 
 						(short)(dataLength + TTPHeaderLength), ttp.getCheckSum(), ttp);
@@ -208,13 +221,7 @@ public class ConDescriptor{
 		this.serverSYN = serverSYN;
 	}
 	
-	public int getExpectSYN() {
-		return expectSYN;
-	}
-	
-	public void setExpectSYN(int syn) {
-		expectSYN = syn;
-	}
+
 	
 	private int min(int a, int b) {
 		return a > b ? b : a;
@@ -229,7 +236,7 @@ public class ConDescriptor{
 		data[0] = string;
 		send(data, len);
 	}
-	public void send(byte dataByte) {
+	public void send(byte[] dataByte) {
 		// TODO Auto-generated method stub
 		short[] len = new short[1];
 		 short length = (short) 1;
