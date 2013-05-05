@@ -11,20 +11,25 @@ import ttpservice.ClientTTPService;
 class FTPClient{
 	
  public static void main(String args[]) throws Exception {
-     //Socket soc=new Socket("127.0.0.1",5218);
+	 if(args.length != 2) {
+			printusage();
+			return;
+		}
 	 ClientTTPService ttps;
-	 int dstport = 9001;
+	 int dstport = Integer.parseInt(args[1]);
+	 String dstip = args[0];
 	 int srcport = 5219;
+	 
 	 System.out.println("ttp service dstport "+dstport);
 		ttps = new ClientTTPService("localhost", (short) srcport);
 		
-		ttps.connect("localhost", (short)dstport);
+		ttps.connect(dstip, (short)dstport);
 		//ttps.receive();
 		//ttps.clientClose();
      TransferfileClient t=new TransferfileClient(ttps);
      t.start(); 
  }
- public void printusage(){
-	 System.out.println("Usage: java FTPClient <server_ip> <server_port> <file_name>");
+ public static void printusage(){
+	 System.out.println("Usage: java FTPClient <server_ip> <server_port> ");
  }
 }

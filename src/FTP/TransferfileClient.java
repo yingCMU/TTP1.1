@@ -37,7 +37,7 @@ class TransferfileClient
  void getFile(String fileName) throws Exception
  {
 	 
-	 
+	 System.out.println("!!!getFIle   >>"+fileName);
      String msgFromServer=(String) ttps.receive();
      System.out.println("msgFromserver>>>"+msgFromServer);
      if(msgFromServer.compareTo("File Not Found")==0)
@@ -49,7 +49,7 @@ class TransferfileClient
      {
          System.out.println("Receiving File ...");
          
-         File f=new File(fileName + 1);
+         File f=new File(fileName );
          FileOutputStream fout=new FileOutputStream(f);
          
          byte[] temp = new byte[1];
@@ -82,7 +82,17 @@ class TransferfileClient
          
           if(command[0].equals("get"))  {
         	 try{
-        	 File f=new File(command[1]);
+        		 String[] method = command[1].split("\\\\");
+        		 File saveDir = new File("../files/");
+        			String fileName = "../files/"+method[method.length-1];
+        			 System.out.println("?? fileName:"+fileName);
+        			if(!saveDir.exists()){
+        		        saveDir.mkdir();
+        		        System.out.println("no");
+        			}
+        			else
+        				System.out.println("yes");
+        	 File f=new File(fileName);
         	 if(f.exists())
              {
                  String Option = null;
@@ -103,7 +113,7 @@ class TransferfileClient
         	 System.out.println(">>input: "+input);
         	 ttps.send(input, (short) input.length());
         	 //dout.writeUTF(input);
-             getFile(command[1]);
+             getFile(fileName);
         	 }
         	 catch(ArrayIndexOutOfBoundsException e){
         		 System.out.println("Error: a file name is required");

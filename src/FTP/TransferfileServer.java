@@ -40,7 +40,7 @@ class TransferfileServer extends Thread
  void SendFile(String filename) throws Exception {        
     // String filename=din.readUTF();
      File f=new File(filename);
-     System.out.println("server sending file :"+filename);
+     
      if(!f.exists()){
     	 /*
     	  * serverSendData(ConDescriptor client, Object data, short dataLength, char category)
@@ -61,25 +61,27 @@ class TransferfileServer extends Thread
 
          MessageDigest md = MessageDigest.getInstance("MD5");
          
-         byte[] dataBytes = new byte[100];
+         byte[] dataBytes = new byte[10];
          int index = 0;
          
          int ch = 0; 
+         System.out.println("server sending file :"+filename);
          do{
         	 ch = fin.read();
-        	 dataBytes[index++] = (byte) ch;
-        	 System.out.println("ch>>"+ch +"  ; sstream >"+new String(dataBytes));
-        	 if(ch != -1)
-           
+        	 
+        	 if(ch != -1){
+        		 dataBytes[index++] = (byte) ch;
+            	 System.out.println("ch>>"+ch +"  ; sstream >"+new String(dataBytes));
         	 md.update((byte) ch);
              
+        	 }
         	 
          } while(ch != -1) ;
          
          Object[] obj = new Object[1];
     	 obj[0] = dataBytes;
     	 short[] len = new short[1];
-    	 len[0] = (short)(index -1);
+    	 len[0] = (short)(index - 2 );
     	 
          clientCon.send(obj, len);
          byte[] mdbytes = md.digest();
