@@ -15,7 +15,7 @@ public abstract class TTPservice {
 	 
 	 private short TTPHeaderLength;
 	 
-	 private DatagramService datagramService;
+	 protected DatagramService datagramService;
 	 
 	 public TTPservice(String srcaddr, short srcPort) {
 		 this.srcaddr = srcaddr;

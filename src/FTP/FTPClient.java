@@ -13,7 +13,7 @@ class FTPClient{
  public static void main(String args[]) throws Exception {
      //Socket soc=new Socket("127.0.0.1",5218);
 	 ClientTTPService ttps;
-	 int dstport = 5218;
+	 int dstport = 9001;
 	 int srcport = 5219;
 	 System.out.println("ttp service dstport "+dstport);
 		ttps = new ClientTTPService("localhost", (short) srcport);

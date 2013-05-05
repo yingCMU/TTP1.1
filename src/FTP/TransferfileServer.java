@@ -46,7 +46,7 @@ class TransferfileServer extends Thread
     	  * serverSendData(ConDescriptor client, Object data, short dataLength, char category)
     	  */
     	// byte[] data = "File Not Found".getBytes("UTF8");
-    	 clientCon.send( "File Not Found");
+    	 clientCon.send(new String("File Not Found"));
          
          
          return;
@@ -60,36 +60,6 @@ class TransferfileServer extends Thread
          
 
          MessageDigest md = MessageDigest.getInstance("MD5");
-         /*
-          * byte[] dataBytes = new byte[1024];
- 
-        int nread = 0; 
-        while ((nread = fis.read(dataBytes)) != -1) {
-          md.update(dataBytes, 0, nread);
-        };
-        byte[] mdbytes = md.digest();
- 
-        //convert the byte to hex format method 1
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < mdbytes.length; i++) {
-          sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-        }
- 
-        System.out.println("Digest(in hex format):: " + sb.toString());
-          * 
-          */
-        
-         
-         /*
-         int ch;
-         do {
-        	 
-             ch=fin.read();
-             md.update(ch, 0, 1);
-             System.out.println("ch >> "+ch);
-             dout.writeUTF(String.valueOf(ch));
-         }
-         while(ch!=-1); */
          
          byte[] dataBytes = new byte[1];
          
@@ -124,28 +94,21 @@ class TransferfileServer extends Thread
 
 
 	 public void run() {
-	     while(live){
-	         try   {
+		 try   {
 	        	 
-	        	 System.out.println("current thread"+Thread.currentThread()+"active>>"+Thread.activeCount());
-		         System.out.println("Waiting for Command ...");
-		         //String[] command = input.split(" ");
-		        // BufferedReader br=new BufferedReader(new InputStreamReader(din));
-		         /*String Commands=din.readUTF();*/
-		         String Commands=(String) clientCon.readData();
-		         String[] command = Commands.split(" " );
-		         System.out.println(command[0]);
-		         if(command[0].equals("get"))  {
-		             System.out.println("\tget Command Received ...");
-		             SendFile(command[1]);
-		             continue;
-		         }
-		        
-		        
-		         else
-		        	 System.out.println("invalid command");
-	         }
-	         catch(SocketException e){
+	        System.out.println("current thread"+Thread.currentThread()+"active>>"+Thread.activeCount());
+		    System.out.println("Waiting for Command ...");
+		         
+		    String Commands=(String) clientCon.readData();
+		    String[] command = Commands.split(" " );
+		    System.out.println(command[0]);
+		    if(command[0].equals("get"))  {
+		    	System.out.println("\tget Command Received ...");
+		        SendFile(command[1]);
+		    } else {
+		    	System.out.println("invalid command");
+		    }
+	    } catch(SocketException e) {
 	        	 //clientCon.close();
 				//din.close();
 				live = false;
@@ -155,5 +118,4 @@ class TransferfileServer extends Thread
 	        	 e.printStackTrace();
 	         }
 	     }
-	    }
 }

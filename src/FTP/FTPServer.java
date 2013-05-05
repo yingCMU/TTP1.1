@@ -21,7 +21,7 @@ public class FTPServer
 	 
 		
 		int port = Integer.parseInt(args[0]);*/
-	 int port = 5218;
+	 int port = 9001;
 		service = new ServerTTPService("localhost", (short)port);
 		System.out.println("Starting Server ... on "+port);
 		ConDescriptor clientCon;
@@ -29,7 +29,7 @@ public class FTPServer
 		
      while(true){
     	 
-         System.out.println("Waiting for Connection ...");
+        // System.out.println("Waiting for Connection ...");
         // TransferfileServer t=new TransferfileServer(soc.accept());
          
 		if((clientCon = service.serverListen()) != null)

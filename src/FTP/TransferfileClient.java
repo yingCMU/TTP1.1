@@ -66,9 +66,11 @@ class TransferfileClient
          
         
          do
-         {
+         {	 System.out.println("before rec ");
              temp=(String) ttps.receive();
+             System.out.println("after rec ");
              ch=Integer.parseInt(temp);
+             System.out.println("ch>> "+ch);
              if(ch!=-1)
              {
                  fout.write(ch);                    
@@ -111,7 +113,7 @@ class TransferfileClient
                 	 
                  }
              }
-        	 System.out.println(">>input: ge"+input);
+        	 System.out.println(">>input: "+input);
         	 ttps.send(input, (short) input.length());
         	 //dout.writeUTF(input);
              getFile(command[1]);

@@ -28,6 +28,9 @@ public class SendWithTimer extends Thread implements Runnable{
 				TTP ttp = (TTP)data.getData();
 				int category = (int)ttp.getCategory();
 				System.out.println("Sending data Category: " + category);
+				if (datagramService == null) {
+					System.out.println("BINGO!!!!!!!!!!!!!!!!!!!!!!!!!");
+				}
 				datagramService.sendDatagram(data);
 				Thread.sleep(time);
 			} catch (InterruptedException e) {

@@ -79,7 +79,7 @@ public class ClientTTPService extends TTPservice{
 			if (datagram == null) {
 				return null;
 			}
-			
+			System.out.println("Client Receive 3");
 			TTP ttp = (TTP)datagram.getData();
 			int ack = ttp.getACK();
 			
@@ -91,13 +91,14 @@ public class ClientTTPService extends TTPservice{
 				clientSendData(null, (short)1, (char)2, 1); //SYN + ACK
 				
 			} else if (ttp.getCategory() == (char)3) {
+				System.out.println("Client Receive data");
 				if (ack == expectSYN && ACK == ttp.getSYN()) {
 					ACK = ttp.getSYN() + ttp.getLength();
 					SYN = expectSYN;
-					clientSendData(null, (short)1, (char)3, 5); //ACK
+					clientSendData(null, (short)1, (char)3, 1); //ACK
 					return ttp.getData();
 				}
-				clientSendData(null, (short)1, (char)3, 5); //ACK
+				clientSendData(null, (short)1, (char)3, 1); //ACK
 			}
 		} else {
 			System.out.println("Please establish the connection first");

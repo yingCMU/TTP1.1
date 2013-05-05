@@ -1,6 +1,7 @@
 package ttpservice;
 
 import java.util.Hashtable;
+
 import datatypes.Datagram;
 
 public class ServerTTPService extends TTPservice{
@@ -9,7 +10,6 @@ public class ServerTTPService extends TTPservice{
 		super(srcaddr, srcPort);
 		
 		clientList = new Hashtable<String, ConDescriptor>();
-	
 	}
 	
 	public ConDescriptor serverListen(){
@@ -27,7 +27,7 @@ public class ServerTTPService extends TTPservice{
 			short dstPort = datagram.getSrcport();
 			
 			ConDescriptor client = new ConDescriptor(srcaddr, dstaddr,
-										srcPort, dstPort, ttp.getSYN());
+										srcPort, dstPort, ttp.getSYN(), datagramService);
 			
 			client.setACK(ttp.getSYN() + ttp.getLength());
 			
@@ -86,6 +86,7 @@ public class ServerTTPService extends TTPservice{
 				if (client.isConnected()) {
 					int ack = ttp.getACK();
 					client.setTempACK(ack);
+					client.receiveFlag = true;
 					if (ack == client.getExpectSYN()) { //right
 						client.setServerSYN(ack);
 						client.setACK(ttp.getSYN()+ttp.getLength()) ;
