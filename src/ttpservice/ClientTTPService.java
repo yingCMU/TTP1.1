@@ -91,6 +91,7 @@ public class ClientTTPService extends TTPservice{
 				
 			} else if (ttp.getCategory() == (char)3) {
 				System.out.println("ack=" + ack + " expectedSYN=" + expectSYN + " ACK=" + ACK + " ttp.getSYN =" + ttp.getSYN());
+				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!TTP Length: " + ttp.getLength());
 				if (ack == expectSYN && ACK == ttp.getSYN()) {
 					System.out.println("ACK correct");
 					ACK = ttp.getSYN() + ttp.getLength();

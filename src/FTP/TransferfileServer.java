@@ -61,7 +61,7 @@ class TransferfileServer extends Thread
 
          MessageDigest md = MessageDigest.getInstance("MD5");
          
-         byte[] dataBytes = new byte[10];
+         byte[] buffer = new byte[10];
          int index = 0;
          
          int ch = 0; 
@@ -70,13 +70,23 @@ class TransferfileServer extends Thread
         	 ch = fin.read();
         	 
         	 if(ch != -1){
-        		 dataBytes[index++] = (byte) ch;
-            	 System.out.println("ch>>"+ch +"  ; sstream >"+new String(dataBytes));
+        		 buffer[index++] = (byte) ch;
         	 md.update((byte) ch);
              
         	 }
         	 
          } while(ch != -1) ;
+         
+         byte[] dataBytes = new byte[index - 1];
+         for (int i = 0; i < dataBytes.length; i++) {
+        	 dataBytes[i] = buffer[i];
+         }
+         
+         System.out.println("Exam bytes to be send");
+         for (int i = 0; i < dataBytes.length; i++) {
+        	 System.out.print(dataBytes[i]);
+         }
+         System.out.println();
          
          Object[] obj = new Object[1];
     	 obj[0] = dataBytes;

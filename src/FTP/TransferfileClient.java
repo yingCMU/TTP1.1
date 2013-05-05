@@ -54,8 +54,8 @@ class TransferfileClient
          
          byte[] temp = new byte[1];
          temp = (byte[])(ttps.receive());
+         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!Length: " + temp.length);
          System.out.println("TEMP: " + temp[0]);
-         System.out.println("before rec ");
          fout.write(temp);     
          fout.close();
          msgFromServer=(String) ttps.receive();
@@ -76,10 +76,10 @@ class TransferfileClient
          
           if(command[0].equals("get"))  {
         	 try{
-        		 String[] method = command[1].split("\\\\");
+        		 String[] method = command[1].split("\\/");
         		 File saveDir = new File("../files/");
         			String fileName = "../files/"+method[method.length-1];
-        			 System.out.println("?? fileName:"+fileName);
+        			 System.out.println("fileName:"+fileName);
         			if(!saveDir.exists()){
         		        saveDir.mkdir();
         		        System.out.println("no");
@@ -108,8 +108,7 @@ class TransferfileClient
         	 ttps.send(input, (short) input.length());
         	 //dout.writeUTF(input);
              getFile(fileName);
-        	 }
-        	 catch(ArrayIndexOutOfBoundsException e){
+        	 } catch(ArrayIndexOutOfBoundsException e){
         		 System.out.println("Error: a file name is required");
         	 }
         	
