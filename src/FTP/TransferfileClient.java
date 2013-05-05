@@ -56,16 +56,10 @@ class TransferfileClient
          temp = (byte[])(ttps.receive());
          System.out.println("TEMP: " + temp[0]);
          System.out.println("before rec ");
-         if (fout == null) {
-        	 System.out.println("fout null");
-         }
-         
-         if (temp == null) {
-        	 System.out.println("receive null");
-         }
          fout.write(temp);     
          fout.close();
-             
+         msgFromServer=(String) ttps.receive();
+         System.out.println("msgFromserver>>>"+msgFromServer);    
      }
      
      

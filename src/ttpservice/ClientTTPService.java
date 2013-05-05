@@ -132,16 +132,14 @@ public class ClientTTPService extends TTPservice{
 			}
 		}
 		
-		//while (true) {
+		while (true) {
 			System.out.println("Sending FIN + ACK");
-				
+			
+			ClientCloseTimer closeTimer = new ClientCloseTimer(10);
 			clientSendData(null, (short)1, (char)6, 1); //SYN + ACK
-			
-			//Datagram datagram = receiveData();
-			//timer.interrupt();
-			//timer = null;
-			
-		//}
-		connectStatus = 6;
+			closeTimer.start();
+			receiveData();
+			timer.interrupt();			
+		}
 	}
 }
