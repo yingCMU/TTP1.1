@@ -40,12 +40,8 @@ public class ClientTTPService extends TTPservice{
 				return;
 			}
 			
-			System.out.println("Receiving server ACK");
-			
 			TTP ttp = (TTP)datagram.getData();
 			ack = ttp.getACK();
-			
-			System.out.println("ACK: " + ack + " ExpectSYN: " + expectSYN);
 			
 			if (ttp.getCategory() == (char)1 && ack == expectSYN) {				
 				connectStatus = 1;
@@ -53,8 +49,6 @@ public class ClientTTPService extends TTPservice{
 				SYN = expectSYN;
 			}
 		}
-				
-		System.out.println("Sending SYN + ACK");
 			
 		clientSendData(null, (short)1, (char)2, 1); //SYN + ACK
 		
@@ -73,32 +67,56 @@ public class ClientTTPService extends TTPservice{
 		expectSYN = SYN + dataLength;
 	}
 	
-	public Object receive() {
+	public byte[] receive() {
+		try {
+			byte[] receiveBuffer = new byte[300000000];
+			System.out.println("Start Receiving Data......");
+			while(true) {
+				TTP rec = receiveDatagram();
+				if (rec == null) {
+					continue;
+				}
+				int offset = rec.getOffset();
+				
+				for(int i = 0; i < rec.getLength(); i++) {
+					receiveBuffer[i + offset] = ((byte[])(rec.getData()))[i]; 
+				}
+				
+				if (rec.getFlag() == (char)1) {
+					int len = offset + rec.getLength();
+					byte[] receive = new byte[len];
+					for (int i = 0; i < len; i++) {
+						receive[i] = receiveBuffer[i];
+					}
+					return receive;
+				}
+			}
+		} catch(ArrayIndexOutOfBoundsException e) {
+			System.out.println("Error: receive buffer overflow");
+			return null;
+		}
+	}
+	
+	private TTP receiveDatagram() {
 		if (connectStatus == 2) {
 			Datagram datagram = receiveData();
 			if (datagram == null) {
 				return null;
 			}
 			TTP ttp = (TTP)datagram.getData();
-			int ack = ttp.getACK();
-			
 			timer.interrupt();
 			
 			if (ttp.getCategory() == (char)1) {
-				System.out.println("Sending SYN + ACK");
 				
 				clientSendData(null, (short)1, (char)2, 1); //SYN + ACK
 				
 			} else if (ttp.getCategory() == (char)3) {
-				System.out.println("ack=" + ack + " expectedSYN=" + expectSYN + " ACK=" + ACK + " ttp.getSYN =" + ttp.getSYN());
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!TTP Length: " + ttp.getLength());
-				if (ack == expectSYN && ACK == ttp.getSYN()) {
-					System.out.println("ACK correct");
+				if (ACK == ttp.getSYN()) {
+					
 					ACK = ttp.getSYN() + ttp.getLength();
-					System.out.println(" ttp.getSYN =" + ttp.getSYN() + " length: " + ttp.getLength());
 					SYN = expectSYN;
 					clientSendData(null, (short)1, (char)3, 1); //ACK
-					return ttp.getData();
+					return ttp;
 				}
 				clientSendData(null, (short)1, (char)3, 1); //ACK
 			}
@@ -135,8 +153,9 @@ public class ClientTTPService extends TTPservice{
 		
 		while (true) {
 			System.out.println("Sending FIN + ACK");
+			System.out.println("Wait 20 seconds to close client...");
 			
-			ClientCloseTimer closeTimer = new ClientCloseTimer(10);
+			ClientCloseTimer closeTimer = new ClientCloseTimer(20);
 			clientSendData(null, (short)1, (char)6, 1); //SYN + ACK
 			closeTimer.start();
 			receiveData();

@@ -7,7 +7,7 @@ public class ClientCloseTimer extends Thread implements Runnable{
 		time = t * 1000;
 	}
 	
-	public void run(){
+	public void run() {
 		try {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {

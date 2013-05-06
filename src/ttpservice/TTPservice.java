@@ -35,13 +35,15 @@ public abstract class TTPservice {
 	 public SendWithTimer sendData (int ACK, int SYN, String dstaddr, short dstPort, 
 			 			  Object data, short dataLength, char category, int count) {
 		TTP ttp = new TTP(ACK, SYN, data, dataLength, category);
+		ttp.setFlag((char)1);
+		
 		Datagram datagram = new Datagram(srcaddr, dstaddr, srcPort, dstPort, 
 							(short)(dataLength + TTPHeaderLength), ttp.getCheckSum(), ttp);
 		
-		System.out.println("Sending data to " + datagram.getDstaddr() + ":" 
-							+ datagram.getDstport());
+		//System.out.println("Sending data to " + datagram.getDstaddr() + ":" 
+							//+ datagram.getDstport());
 		
-		SendWithTimer sendWithTimer = new SendWithTimer(10000, datagram, datagramService, count);	
+		SendWithTimer sendWithTimer = new SendWithTimer(20, datagram, datagramService, count);	
 		sendWithTimer.start();
 		return sendWithTimer;
 	}
@@ -50,9 +52,10 @@ public abstract class TTPservice {
 		try {
 			return datagramService.receiveDatagram();
 		} catch (ClassNotFoundException e) {
-			System.out.println("TTP Service receiveData exception");
+			System.out.println("TTP Service receiveData Classexception");
 		} catch (IOException e) {
-			System.out.println("TTP Service receiveData exception");
+			e.printStackTrace();
+			System.out.println("TTP Service receiveData IOexception");
 		} 
 		return null;
 	}

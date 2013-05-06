@@ -11,9 +11,9 @@ public class SendWithTimer extends Thread implements Runnable{
 	private DatagramService datagramService;
 	private int sendCount;
 	
-	public SendWithTimer(int milliseconds, Datagram datagram, DatagramService dataService, 
+	public SendWithTimer(int seconds, Datagram datagram, DatagramService dataService, 
 				int count) {
-		time = milliseconds;
+		time = seconds * 1000;
 		data = datagram;
 		datagramService = dataService;
 		sendCount = count;
@@ -21,16 +21,9 @@ public class SendWithTimer extends Thread implements Runnable{
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		while(sendCount > 0 && !Thread.interrupted()) {
 			
 			try {
-				TTP ttp = (TTP)data.getData();
-				int category = (int)ttp.getCategory();
-				System.out.println("Sending data Category: " + category);
-				if (datagramService == null) {
-					System.out.println("BINGO!!!!!!!!!!!!!!!!!!!!!!!!!");
-				}
 				datagramService.sendDatagram(data);
 				Thread.sleep(time);
 			} catch (InterruptedException e) {

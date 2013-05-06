@@ -6,6 +6,7 @@ import datatypes.Datagram;
 
 public class ServerTTPService extends TTPservice{
 	private Hashtable<String, ConDescriptor> clientList;
+	
 	public ServerTTPService(String srcaddr, short srcPort) {
 		super(srcaddr, srcPort);
 		
@@ -20,14 +21,13 @@ public class ServerTTPService extends TTPservice{
 		}
 		
 		TTP ttp = (TTP)datagram.getData();
-		System.out.println("Server Receive from client, Category: " + (int)ttp.getCategory());
 		
 		if (ttp.getCategory() == (char)0) { 	//syn packet
 			String dstaddr = datagram.getSrcaddr();
 			short dstPort = datagram.getSrcport();
 			
-			ConDescriptor client = new ConDescriptor(srcaddr, dstaddr,
-										srcPort, dstPort, ttp.getSYN(), datagramService);
+			ConDescriptor client = new ConDescriptor(srcaddr, dstaddr, srcPort, dstPort, 
+									ttp.getSYN(), datagramService, clientList);
 			
 			client.setACK(ttp.getSYN() + ttp.getLength());
 			
@@ -71,12 +71,10 @@ public class ServerTTPService extends TTPservice{
 					clientList.remove(client.getKey());
 					client.stopCloseTimer();
 					System.out.println("Server connection closed");
-					System.out.println("remove success? " + !clientList.containsKey(client.getKey()));
 				}
 			}	
 		} else if (ttp.getCategory() == (char)3) {									//requset
 			if (clientList.containsKey(datagram.getSrcaddr() + datagram.getSrcport())) {
-				System.out.println("Receive Data From Client");
 				ConDescriptor client = clientList.get(datagram.getSrcaddr() 
 														 + datagram.getSrcport());
 				client.killTimer();

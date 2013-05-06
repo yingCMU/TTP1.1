@@ -6,6 +6,7 @@ public class DataSegment {
 	public int SYN;
 	public int expectedSYN;
 	public SendWithTimer timer;
+	public int offset;
 	
 	public DataSegment() {
 		

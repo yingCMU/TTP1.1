@@ -1,14 +1,8 @@
 package FTP;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
+
 import java.net.SocketException;
 import java.security.MessageDigest;
 
@@ -19,15 +13,10 @@ class TransferfileServer extends Thread
 {
  ConDescriptor clientCon;
  boolean live = true;
-// DataInputStream din;
- //DataOutputStream dout;
  
  public TransferfileServer( ConDescriptor conDescriptor) {
      try {
          clientCon=conDescriptor;   
-         
-        // din=new DataInputStream(clientSocket.getInputStream());
-        // dout=new DataOutputStream(clientSocket.getOutputStream());
          System.out.println("FTP Client Connected ...");
          start();
          
@@ -38,30 +27,24 @@ class TransferfileServer extends Thread
      }        
  }
  void SendFile(String filename) throws Exception {        
-    // String filename=din.readUTF();
      File f=new File(filename);
      
      if(!f.exists()){
-    	 /*
-    	  * serverSendData(ConDescriptor client, Object data, short dataLength, char category)
-    	  */
-    	// byte[] data = "File Not Found".getBytes("UTF8");
-    	 clientCon.send(new String("File Not Found"));
+
+    	 clientCon.send("File Not Found".getBytes("UTF8"), (short)14);
          
          
          return;
      }
      else  {
     	 System.out.println("READY");
-         clientCon.send("READY");
-    	 //System.out.println("MD5");
-         //dout.writeUTF("MD5");
+         clientCon.send("READY".getBytes("UTF8"), (short)5);
          FileInputStream fin=new FileInputStream(f);
          
 
          MessageDigest md = MessageDigest.getInstance("MD5");
          
-         byte[] buffer = new byte[10];
+         byte[] buffer = new byte[300000000];
          int index = 0;
          
          int ch = 0; 
@@ -71,29 +54,23 @@ class TransferfileServer extends Thread
         	 
         	 if(ch != -1){
         		 buffer[index++] = (byte) ch;
-        	 md.update((byte) ch);
-             
+        		 md.update((byte) ch);
+        	 }
+        	 
+        	 if (index < 0) {
+        		 System.out.println("Error: File Too Large");
+        		 fin.close(); 
+        		 return;
         	 }
         	 
          } while(ch != -1) ;
          
-         byte[] dataBytes = new byte[index - 1];
+         byte[] dataBytes = new byte[index];
          for (int i = 0; i < dataBytes.length; i++) {
         	 dataBytes[i] = buffer[i];
          }
-         
-         System.out.println("Exam bytes to be send");
-         for (int i = 0; i < dataBytes.length; i++) {
-        	 System.out.print(dataBytes[i]);
-         }
-         System.out.println();
-         
-         Object[] obj = new Object[1];
-    	 obj[0] = dataBytes;
-    	 short[] len = new short[1];
-    	 len[0] = (short)(index - 2 );
     	 
-         clientCon.send(obj, len);
+         clientCon.send(dataBytes, index);
          byte[] mdbytes = md.digest();
   
          //convert the byte to hex format method 1
@@ -106,7 +83,7 @@ class TransferfileServer extends Thread
          
          
          fin.close();    
-         clientCon.send("File Receive Successfully"); 
+         clientCon.send("File Receive Successfully".getBytes("UTF8"), (short)"File Receive Successfully".length()); 
          System.out.println("file send successfully");
          return;
      }
